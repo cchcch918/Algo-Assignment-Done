@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Algo Assignment
+    </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'
+        async></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='design.css') }}">
+    {{ JSGlue.include() }}
+
+</head>
+
+
+<body>
+
+    <div class="jumbotron jumbotron-fluid" style="background:#C0C0C0">
+        <h1 class="display-4 text-center">Find best flight</h1>
+        <p class="lead text-center">Algo assignment by group tutorial 12</p>
+    </div>
+
+    <div class="container">
+        <div>
+
+            <iframe id="dynamic_map" class="embed-responsive-item" width="100%" height="720" frameborder="0"
+                style="border:0 " src="{{ url_for('static', filename='dynamic_map.html' ) }}"></iframe>
+        </div>
+        <div>
+            <p>
+                $$ Score = {\left ( \frac{ longest\, distance - distance }{ longest\, distance - shortest\, distance}
+                \right
+                )\times 70 +\left ( \frac{political\, sentiment\, results+100}{200}\times30 \right ) }.$$
+            </p>
+        </div>
+        <div>
+            <table id="table" class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <th scope="col">Ways</th>
+                        <th scope="col">Route</th>
+                        <th scope="col">Distance (km)</th>
+                        <th scope="col">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr id="{{ loop.index }}">
+
+                        <td> {{ loop.index }}</td>
+                        <td> {{ item.route }}</td>
+                        <td> {{ item.distance }}</td>
+                        <td> {{ item.score }}</td>
+                    </tr>
+                    {% endfor %}
+                <tbody>
+            </table>
+        </div>
+
+
+
+
+        <div class="row justify-content-center" id="graph">
+        </div>
+
+
+
+
+
+        <div class="jumbotron">
+            <h3>Select your destination</h3>
+            <form class="mt-3 mb-3" method="POST" action="/">
+                <div class="form-group">
+                    <label>From :</label>
+                    <input class="form-control" placeholder="Kuala Lumpur International Airport 2(KLIA2)" disabled>
+                </div>
+                <div class="form-group">
+                    <label>To your destination:</label>
+                    <select class="form-control" name="destination">
+                        {% for airport in airports %}
+                        <option value={{loop.index}}>{{airport}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button id="submit" type="submit" class="btn btn-primary">Submit
+                </button>
+
+            </form>
+        </div>
+
+    </div>
+
+
+
+
+
+    <div class="footer text-center" style="background-color:#C0C0C0">
+        <h4>
+            &copy2019 FC Sit Group. Your usage of FC Sit Flight Planner indicates that
+            you agree to be bound by our Terms and Conditions, Terms of Use and Privacy
+            Policy. This website is owned and operated by FC Sit Group.
+        </h4>
+    </div>
+
+</body>
+
+<script>
+    var tableSize = ($('#table tbody tr').length);
+    var route = [];
+    var myTab = document.getElementById('table');
+
+
+    var allallRoute = [];
+    for (var i = 0; i < tableSize; i++) {
+        var route = [];
+        var allRoute = [];
+        var objCells = (myTab.rows[i + 1].cells[1].innerText);
+        objCells = objCells.toString();
+        route = objCells.split(" > ");
+        for (var j = 1; j < route.length; j++) {
+
+            allRoute.push(route[j].toString());
+
+        }
+        allallRoute.push(allRoute);
+    }
+    console.log(allallRoute)
+
+
+
+
+
+
+
+
+</script>
+
+{% for item in items %}
+<script>
+    $("#{{ loop.index }}").click(function () {
+        $("#graph").children().remove();
+        var index = '{{ loop.index }}';
+        var length = allallRoute[index - 1].length;
+        for (var j = 0; j < length; j++) {
+            // alert(allallRoute[index - 1][j]);
+
+            if (allallRoute[index - 1][j] == "singapore") {
+                var html = `<iframe id="dynamic_map" class="embed-responsive-item" width="100%" height="720" frameborder="0"
+                style="border:0 " src="{{ url_for('static', filename='singapore.html' ) }}"></iframe>`;
+                var title =` <h2 class="text-center"><u>Singapore</u></h2>`;
+                $("#graph").append(title);
+                $("#graph").append(html);
+                
+
+            }
+            else if (allallRoute[index - 1][j] == "indonesia") {
+                var html = `<iframe id="dynamic_map" class="embed-responsive-item" width="100%" height="720" frameborder="0"
+                style="border:0 " src="{{ url_for('static', filename='indonesia.html' ) }}"></iframe>`;
+                var title =` <h2 class="text-center"><u>Indonesia</u></h2>`;
+                $("#graph").append(title);
+                $("#graph").append(html);
+            }
+            else if (allallRoute[index - 1][j] == "hongkong") {
+                var html = `<iframe id="dynamic_map" class="embed-responsive-item" width="100%" height="720" frameborder="0"
+                style="border:0 " src="{{ url_for('static', filename='hongkong.html' ) }}"></iframe>`;
+                var title =` <h2 class="text-center"><u>Hong Kong</u></h2>`;
+                $("#graph").append(title);
+                $("#graph").append(html);
+            }
+            else if (allallRoute[index - 1][j] == "australia") {
+                var html = `<iframe id="dynamic_map" class="embed-responsive-item" width="100%" height="720" frameborder="0"
+                style="border:0 " src="{{ url_for('static', filename='australia.html' ) }}"></iframe>`;
+                var title =` <h2 class="text-center"><u>Australia</u></h2>`;
+                $("#graph").append(title);
+                $("#graph").append(html);
+            }
+            else if (allallRoute[index - 1][j] == "china") {
+                var html = `<iframe id="dynamic_map" class="embed-responsive-item" width="100%" height="720" frameborder="0"
+                style="border:0 " src="{{ url_for('static', filename='china.html' ) }}"></iframe>`;
+                var title =` <h2 class="text-center"><u>China</u></h2>`;
+                $("#graph").append(title);
+                $("#graph").append(html);
+            }
+            else if (allallRoute[index - 1][j] == "taiwan") {
+                var html = `<iframe id="dynamic_map" class="embed-responsive-item" width="100%" height="720" frameborder="0"
+                style="border:0 " src="{{ url_for('static', filename='taiwan.html' ) }}"></iframe>`;
+                var title =` <h2 class="text-center"><u>Taiwan</u></h2>`;
+                $("#graph").append(title);
+                $("#graph").append(html);
+            }
+            else if (allallRoute[index - 1][j] == "japan") {
+                var html = `<iframe id="dynamic_map" class="embed-responsive-item" width="100%" height="720" frameborder="0"
+                style="border:0 " src="{{ url_for('static', filename='japan.html' ) }}"></iframe>`;
+                var title =` <h2 class="text-center"><u>Japan</u></h2>`;
+                $("#graph").append(title);
+                $("#graph").append(html);
+            }
+            else if (allallRoute[index - 1][j] == "brunei") {
+                var html = `<iframe id="dynamic_map" class="embed-responsive-item" width="100%" height="720" frameborder="0"
+                style="border:0 " src="{{ url_for('static', filename='brunei.html' ) }}"></iframe>`;
+                var title =` <h2 class="text-center"><u>Brunei</u></h2>`;
+                $("#graph").append(title);
+                $("#graph").append(html);
+            }
+            else if (allallRoute[index - 1][j] == "thailand") {
+                var html = `<iframe id="dynamic_map" class="embed-responsive-item" width="100%" height="720" frameborder="0"
+                style="border:0 " src="{{ url_for('static', filename='thailand.html' ) }}"></iframe>`;
+                var title =` <h2 class="text-center"><u>Thailand</u></h2>`;
+                $("#graph").append(title);
+                $("#graph").append(html);
+            }
+        }
+    });
+
+
+</script>
+{% endfor %}
+
+</html>
